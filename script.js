@@ -122,7 +122,7 @@ const processChange = (changeDue, status) => {
     }
 
     if (changeDue > 0) {
-        return ["Status: INSUFFICIENT_FUNDS"];
+        return [INSUFFICIENT_FUNDS];
     } else {
         return returnArr;
     }
