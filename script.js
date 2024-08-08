@@ -1,3 +1,4 @@
+// freecodecamp uses price and cid to evaluate code 
 let price = 19.5;
 let cid = [
     ['PENNY', 1.01],
@@ -32,27 +33,29 @@ const changeDueElement = document.getElementById("change-due");
 function changeDue() {
 
     const cash = parseFloat(cashInput.value);
-    let changeDue = cash - price;
+    const changeDue = cash - price;
 
     if (cash < price) {
+
         alert("Customer does not have enough money to purchase the item");
+
     } else if (changeDue === 0) {
+
         changeDueElement.textContent = "No change due - customer paid with exact cash";
+
     } else {
 
-        if (changeAvailability(changeDue) === INSUFFICIENT_FUNDS) {
+        const msg = changeAvailability(changeDue);
+
+        if (msg === INSUFFICIENT_FUNDS) {
 
             displayInsufficientFunds();
 
         } else if (changeDue > 0) {
 
-            let arr = processChange(changeDue, changeAvailability(changeDue));
+            let arr = processChange(changeDue, msg);
+            displayOpen(arr);
 
-            if (arr[0] == INSUFFICIENT_FUNDS) {
-                displayInsufficientFunds();
-            } else {
-                displayOpen(arr);
-            }
         }
     }
 }
@@ -60,25 +63,23 @@ function changeDue() {
 // check if change is available
 function changeAvailability(changeDue) {
 
-    ("called changeAvailability()");
-
-
     let changeAvailable = 0;
     for (let i = 0; i < cid.length; i++) {
         changeAvailable += cid[i][1];
     }
 
-    ("changeAvailable = " + changeAvailable);
-    ("changeDue = " + changeDue);
-
-
-
     if (changeDue > changeAvailable) {
+
         return INSUFFICIENT_FUNDS;
+
     } else if (changeDue == changeAvailable) {
+
         return CLOSED;
+
     } else {
+
         return OPEN;
+
     }
 }
 
@@ -89,6 +90,7 @@ function displayInsufficientFunds() {
 
 // display "Open" 
 function displayOpen(arr) {
+
     let s = "";
 
     for (let i = 0; i < arr.length; i++) {
@@ -96,7 +98,6 @@ function displayOpen(arr) {
     }
 
     changeDueElement.textContent = s;
-
 }
 
 // process change
@@ -104,6 +105,7 @@ function processChange(changeDue, status) {
     let returnArr = [status];
 
     for (let i = cid.length - 1; i >= 0; i--) {
+
         const item = cid[i];
         const itemName = item[0];
         let value;
@@ -141,14 +143,14 @@ function processChange(changeDue, status) {
         }
 
         if (value !== 0 && changeDue > 0) {
-            let availaleItem = Math.ceil(item[1] / value);
 
+            let availaleItem = Math.ceil(item[1] / value);
             let changeCount = 0;
+
             while (value <= changeDue && availaleItem > 0) {
                 changeCount += value;
                 availaleItem--;
                 changeDue = (changeDue - value).toFixed(2);
-
             }
 
             if (changeCount > 0) {
