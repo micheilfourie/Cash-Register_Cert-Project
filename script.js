@@ -12,16 +12,6 @@ let cid = [
     ['ONE HUNDRED', 100]
 ];
 
-const PENNY = 0.01;
-const NICKEL = 0.05;
-const DIME = 0.1;
-const QUARTER = 0.25;
-const ONE = 1;
-const FIVE = 5;
-const TEN = 10;
-const TWENTY = 20;
-const HUNDRED = 100;
-
 const INSUFFICIENT_FUNDS = "Status: INSUFFICIENT_FUNDS";
 const OPEN = "Status: OPEN";
 const CLOSED = "Status: CLOSED";
@@ -51,7 +41,7 @@ function changeDue() {
 
             displayInsufficientFunds();
 
-        } else if (changeDue > 0) {
+        } else if (changeDue >= 0) {
 
             let arr = processChange(changeDue, msg);
             displayOpen(arr);
@@ -88,7 +78,7 @@ function displayInsufficientFunds() {
     changeDueElement.textContent = INSUFFICIENT_FUNDS;
 }
 
-// display "Open" 
+// display "Open" and "Closed"
 function displayOpen(arr) {
 
     let s = "";
@@ -101,69 +91,41 @@ function displayOpen(arr) {
 }
 
 // process change
-function processChange(changeDue, status) {
-    let returnArr = [status];
+const processChange = (changeDue, status) => {
 
-    for (let i = cid.length - 1; i >= 0; i--) {
+    const returnArr = [status];
+    const itemValues = {
+        PENNY: 0.01,
+        NICKEL: 0.05,
+        DIME: 0.1,
+        QUARTER: 0.25,
+        ONE: 1,
+        FIVE: 5,
+        TEN: 10,
+        TWENTY: 20,
+        "ONE HUNDRED": 100
+    };
 
-        const item = cid[i];
-        const itemName = item[0];
-        let value;
+    for (const [itemName, value] of cid.reverse()) {
+        let changeCount = 0;
+        let availableItem = Math.ceil(value / itemValues[itemName]);
 
-        switch (itemName) {
-            case "PENNY":
-                value = PENNY;
-                break;
-            case "NICKEL":
-                value = NICKEL;
-                break;
-            case "DIME":
-                value = DIME;
-                break;
-            case "QUARTER":
-                value = QUARTER;
-                break;
-            case "ONE":
-                value = ONE;
-                break;
-            case "FIVE":
-                value = FIVE;
-                break;
-            case "TEN":
-                value = TEN;
-                break;
-            case "TWENTY":
-                value = TWENTY;
-                break;
-            case "ONE HUNDRED":
-                value = HUNDRED;
-                break;
-            default:
-                value = 0;
+        while (itemValues[itemName] <= changeDue && availableItem > 0) {
+            changeCount += itemValues[itemName];
+            availableItem--;
+            changeDue = (changeDue - itemValues[itemName]).toFixed(2);
         }
 
-        if (value !== 0 && changeDue > 0) {
-
-            let availaleItem = Math.ceil(item[1] / value);
-            let changeCount = 0;
-
-            while (value <= changeDue && availaleItem > 0) {
-                changeCount += value;
-                availaleItem--;
-                changeDue = (changeDue - value).toFixed(2);
-            }
-
-            if (changeCount > 0) {
-                returnArr += ` ${itemName}: $${changeCount.toFixed(2)}`;
-            }
+        if (changeCount > 0) {
+            returnArr.push(`${itemName}: $${changeCount.toFixed(2)} `);
         }
     }
 
     if (changeDue > 0) {
-        return [INSUFFICIENT_FUNDS];
+        return ["Status: INSUFFICIENT_FUNDS"];
     } else {
         return returnArr;
     }
-}
+};
 
 purchaseButton.addEventListener("click", changeDue);
