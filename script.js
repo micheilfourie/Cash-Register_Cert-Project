@@ -1,5 +1,5 @@
 // freecodecamp uses price and cid to evaluate code 
-let price = 19.5;
+let price = 19.52;
 let cid = [
     ['PENNY', 1.01],
     ['NICKEL', 2.05],
@@ -117,7 +117,7 @@ const processChange = (changeDue, status) => {
         }
 
         if (changeCount > 0) {
-            returnArr.push(`${itemName}: $${changeCount.toFixed(2)} `);
+            returnArr.push(` ${itemName}: $${changeCount.toFixed(2)}`);
         }
     }
 
