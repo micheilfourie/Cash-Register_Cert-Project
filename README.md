@@ -1,1 +1,1 @@
-freecodecamp certificate project
+freecodecamp js certificate project
